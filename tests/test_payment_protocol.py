@@ -53,7 +53,7 @@ class MockContract:
     def functions(self):
         return MockContractFunctions(self)
 
-    def/events(self):
+    def events(self):
         return MockEvents()
 
 

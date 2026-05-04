@@ -194,12 +194,35 @@ Open issues with [`good first issue`](https://github.com/kcolbchain/switchboard/
 ## Install
 
 ```bash
-pip install -e .
-# optional, for ZAP binary wire:
-pip install 'luxfi-zap @ git+https://github.com/luxfi/zap@main#subdirectory=python'
+pip install switchboard-agent           # PyPI distribution name
+# import name stays `switchboard`:
+#   from switchboard.x402_middleware import X402Middleware
+
+# Optional extras:
+pip install 'switchboard-agent[fastapi]'   # FastAPI middleware deps
+pip install 'switchboard-agent[flask]'     # Flask middleware deps
+pip install 'switchboard-agent[zap]'       # ZAP binary wire (luxfi/zap)
+pip install 'switchboard-agent[all]'       # everything
 ```
 
-Python 3.11+. Tests: `pytest tests/`.
+Python 3.11+. Tests: `pytest tests/`. Solidity tests: `forge test` (see [Foundry setup](#foundry--on-chain-deployment) below).
+
+### Foundry / on-chain deployment
+
+`AgentEscrow.sol` ships with a Foundry scaffold for testnet deploys:
+
+```bash
+forge install                      # pulls OpenZeppelin + forge-std
+forge build
+forge test -vv
+
+# Copy .env.example → .env, then:
+make deploy-base-sepolia           # 84532
+make deploy-op-sepolia             # 11155420
+make deploy-lux-testnet            # 96368
+```
+
+Deployed addresses go into `switchboard/registry.json` (chainId-keyed).
 
 ---
 

@@ -1,0 +1,80 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "switchboard-agent"
+version = "0.1.0"
+description = "Programmable payments for AI agents — HTTP/402, on-chain escrow, gas budgets, nonce manager, ZAP binary wire."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+authors = [
+    { name = "kcolbchain", email = "services@kcolbchain.com" },
+]
+keywords = ["agent", "payments", "x402", "escrow", "ethereum", "ai", "web3"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "pydantic>=2",
+    "web3>=6",
+    "httpx",
+    "eth-account",
+    "sortedcontainers",
+]
+
+[project.optional-dependencies]
+fastapi = ["fastapi>=0.110", "starlette>=0.36"]
+flask = ["flask>=3"]
+zap = ["luxfi-zap"]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.4",
+]
+all = [
+    "fastapi>=0.110",
+    "starlette>=0.36",
+    "flask>=3",
+    "luxfi-zap",
+]
+
+[project.urls]
+Homepage = "https://github.com/kcolbchain/switchboard"
+Repository = "https://github.com/kcolbchain/switchboard"
+Issues = "https://github.com/kcolbchain/switchboard/issues"
+Organization = "https://kcolbchain.com"
+
+[project.scripts]
+switchboard = "src.payment_protocol:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["switchboard", "src"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"switchboard/registry.json" = "switchboard/registry.json"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "switchboard",
+    "src",
+    "contracts",
+    "README.md",
+    "LICENSE",
+    "pyproject.toml",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
