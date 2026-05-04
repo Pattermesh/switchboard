@@ -75,9 +75,17 @@ class PaymentRequest:
         return cls(**d)
 
     def content_hash(self) -> str:
-        """Calculate content-based hash for integrity check"""
+        """Content-based hash. Excludes volatile fields (`created_at`, `status`) so two
+        requests with identical content produce the same hash regardless of when they
+        were instantiated."""
+        d = asdict(self)
+        if self.amount_usd is not None:
+            d['amount_usd'] = str(self.amount_usd)
+        d.pop('created_at', None)
+        d.pop('status', None)
+        canonical = json.dumps(d, sort_keys=True, separators=(',', ':'))
         h = hashlib.sha256()
-        h.update(self.to_json().encode('utf-8'))
+        h.update(canonical.encode('utf-8'))
         return "0x" + h.hexdigest()
 
 
@@ -507,7 +515,7 @@ def parse_wei(amount: str) -> int:
     
     multiplier = {
         "ETH": 10**18,
-        "wei": 1,
+        "WEI": 1,
         "KETH": 10**21,
     }.get(currency.upper(), 10**18)
     
